@@ -49,7 +49,12 @@ class="slider-bg_img">
 
 let content = "";
 
-item.content.forEach(text => {
+let contents = Array.isArray(item.content)
+    ? item.content
+    : item.content.split("|");
+
+
+contents.forEach(text => {
 
 content += `<li>${text}</li>`;
 
@@ -215,11 +220,12 @@ CONNECT
 */
 
 
-textSwiper.controller.control = thumbsSwiper;
+textSwiper.controller.control = [
+    thumbsSwiper,
+    bgSwiper
+];
 
 thumbsSwiper.controller.control = textSwiper;
-
-textSwiper.controller.control = bgSwiper;
 
 
 
