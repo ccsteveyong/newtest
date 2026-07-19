@@ -1,4 +1,4 @@
-const API = "https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnS0CJyg0GCJHzOcI28Mc70EDiUea3kWU9QtzeaJAZT_vJ1ZVZejSWJTQt_zqW7jANs2rVvwdONlVeUCAgD236xWz6tzbKJkfYDfYkxVwmG7KMCdJuEKUJPNPcS8MJqcR8p5GyH2nb6eXiChLK3ryl59ByPuKhgnBnlyeAp5ZGKyaafrUOMtqtx7Tuq6_Crf5u5QRQHaiaPUDNqSBqU9ozvjeAqmI134sWj-ZdvqtD0Oz8LQZMNaagFxZqGk3MSUiwY4tNcjNT-NkWCJUNOcD7_QSC48TA&lib=M4Bv-ARtfVX03mmcIP3dWBKV8G9BMDobo";
+const API = "https://script.google.com/macros/s/AKfycbyS2-C9UbYSoFpTJmDoBpjnKwdqRynm3mx-cDcKxKSKR8Y6MaODCtMNjtzAmlyTvLY1/exec";
 
 function numberWithZero(num) {
     return num < 10 ? "0" + num : num;
