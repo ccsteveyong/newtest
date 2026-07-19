@@ -5,32 +5,31 @@ function numberWithZero(num) {
 }
 
 
-fetch("API")
+document.addEventListener("DOMContentLoaded", () => {
+
+
+fetch("data.json")
 .then(response => response.json())
 .then(data => {
 
 
-const bgWrapper =
-document.querySelector(".is-slider-bg.swiper-wrapper");
+console.log("JSON Loaded:", data);
 
 
-const titleWrapper =
-document.querySelector(".is-slider-titles.swiper-wrapper");
 
-
-const thumbWrapper =
-document.querySelector(".is-slider-thumbs.swiper-wrapper");
+const bgWrapper = document.querySelector(".swiper-wrapper.is-slider-bg");
+const titleWrapper = document.querySelector(".swiper-wrapper.is-slider-titles");
+const thumbWrapper = document.querySelector(".swiper-wrapper.is-slider-thumbs");
 
 
 
 data.forEach(item => {
 
 
-/*
-BACKGROUND IMAGE
-*/
 
-bgWrapper.innerHTML += `
+/* BACKGROUND */
+
+bgWrapper.insertAdjacentHTML("beforeend",`
 
 <div class="swiper-slide is-slider-bg">
 
@@ -40,28 +39,27 @@ class="slider-bg_img">
 
 </div>
 
-`;
+`);
 
 
 
-/*
-TITLE CONTENT
-*/
 
-let contentHTML = "";
 
-item.content.forEach(text=>{
+/* TITLE */
 
-contentHTML += `
-<li>${text}</li>
-`;
+let content = "";
+
+item.content.forEach(text => {
+
+content += `<li>${text}</li>`;
 
 });
 
 
-titleWrapper.innerHTML += `
+titleWrapper.insertAdjacentHTML("beforeend",`
 
 <div class="swiper-slide is-slider-titles">
+
 
 <div class="slider-titles_heading">
 
@@ -79,23 +77,23 @@ ${item.year}
 
 <ul id="content-list">
 
-${contentHTML}
+${content}
 
 </ul>
 
 
 </div>
 
-`;
+`);
 
 
 
-/*
-THUMBNAILS
-*/
 
 
-thumbWrapper.innerHTML += `
+/* THUMB */
+
+
+thumbWrapper.insertAdjacentHTML("beforeend",`
 
 <div class="swiper-slide is-slider-thumbs">
 
@@ -109,27 +107,31 @@ class="slider-thumbs_img">
 
 </div>
 
-`;
-
-
+`);
 
 });
 
 
 
-let totalSlides = numberWithZero(data.length);
+
+/*
+UPDATE COUNTER
+*/
 
 $(".swiper-number-total")
-.text(totalSlides);
+.text(numberWithZero(data.length));
+
+
 
 
 
 /*
-SWIPER INITIALIZATION
+INITIALIZE SWIPER AFTER DATA EXISTS
 */
 
 
-const bgSwiper = new Swiper(".swiper.is-slider-bg",{
+const bgSwiper = new Swiper(".swiper.is-slider-bg", {
+
 
 slidesPerView:1,
 
@@ -139,7 +141,9 @@ effect:"fade",
 
 allowTouchMove:false
 
+
 });
+
 
 
 
@@ -162,6 +166,7 @@ slideToClickedSlide:true
 
 
 
+
 const textSwiper = new Swiper(".swiper.is-slider-titles",{
 
 
@@ -173,12 +178,15 @@ loop:true,
 
 loopedSlides:data.length,
 
+slideToClickedSlide:true,
 
-centeredSlides:true,
 
 mousewheel:true,
 
 keyboard:true,
+
+
+centeredSlides:true,
 
 
 slideActiveClass:"is-active",
@@ -186,12 +194,13 @@ slideActiveClass:"is-active",
 slideDuplicateActiveClass:"is-active",
 
 
-
 navigation:{
+
 
 nextEl:".swiper-next",
 
 prevEl:".swiper-prev"
+
 
 }
 
@@ -200,37 +209,41 @@ prevEl:".swiper-prev"
 
 
 
+
 /*
-CONNECT SLIDERS
+CONNECT
 */
 
 
-textSwiper.controller.control =
-thumbsSwiper;
+textSwiper.controller.control = thumbsSwiper;
 
+thumbsSwiper.controller.control = textSwiper;
 
-thumbsSwiper.controller.control =
-textSwiper;
-
-
-textSwiper.controller.control =
-bgSwiper;
+textSwiper.controller.control = bgSwiper;
 
 
 
-textSwiper.on("slideChange",function(e){
 
 
-let current =
-numberWithZero(e.realIndex+1);
+textSwiper.on("slideChange", function(e){
 
 
 $(".swiper-number-current")
-.text(current);
+.text(
+numberWithZero(e.realIndex + 1)
+);
 
 
 });
 
+
+
+})
+.catch(error=>{
+
+console.error("JSON ERROR:",error);
+
+});
 
 
 });
