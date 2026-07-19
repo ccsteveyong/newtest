@@ -1,112 +1,112 @@
 const API = "https://script.google.com/macros/s/AKfycbyS2-C9UbYSoFpTJmDoBpjnKwdqRynm3mx-cDcKxKSKR8Y6MaODCtMNjtzAmlyTvLY1/exec";
 
 
+function numberWithZero(num){
+    return num < 10 ? "0" + num : num;
+}
+
+
+
 fetch(API)
 
 .then(response => response.json())
 
 .then(data => {
 
-    console.log("API Loaded:", data);
 
-
-    const bgWrapper = document.querySelector(".swiper-wrapper.is-slider-bg");
-    const titleWrapper = document.querySelector(".swiper-wrapper.is-slider-titles");
-    const thumbWrapper = document.querySelector(".swiper-wrapper.is-slider-thumbs");
-
-
-    // Remove Webflow CMS placeholder
-    bgWrapper.innerHTML = "";
-    titleWrapper.innerHTML = "";
-    thumbWrapper.innerHTML = "";
-
-
-    data.forEach(item => {
-
-
-        // BACKGROUND IMAGE
-
-        bgWrapper.insertAdjacentHTML(
-            "beforeend",
-            `
-            <div class="swiper-slide is-slider-bg">
-                <img 
-                src="${item.image}" 
-                class="slider-bg_img">
-            </div>
-            `
-        );
+console.log("API:", data);
 
 
 
-        // TITLE
+const bgWrapper = document.querySelector(".swiper-wrapper.is-slider-bg");
 
-        titleWrapper.insertAdjacentHTML(
-            "beforeend",
-            `
-            <div class="swiper-slide is-slider-titles">
+const titleWrapper = document.querySelector(".swiper-wrapper.is-slider-titles");
 
-                <div class="year">
-                    ${item.year}
-                </div>
-
-                <p class="slider-titles_heading">
-                    ${item.title}
-                </p>
-
-            </div>
-            `
-        );
+const thumbWrapper = document.querySelector(".swiper-wrapper.is-slider-thumbs");
 
 
 
-        // THUMBNAIL
+// remove Webflow dummy slides
 
-        thumbWrapper.insertAdjacentHTML(
-            "beforeend",
-            `
-            <div class="swiper-slide is-slider-thumbs">
+bgWrapper.innerHTML = "";
 
-                <div class="slider-thumbs_height">
+titleWrapper.innerHTML = "";
 
-                    <img 
-                    src="${item.image}" 
-                    class="slider-thumbs_img">
-
-                </div>
-
-            </div>
-            `
-        );
-
-
-    });
+thumbWrapper.innerHTML = "";
 
 
 
-    // Update total number
 
-    $(".swiper-number-total")
-    .text(numberWithZero(data.length));
+// CREATE SLIDES
 
-
-
-    /*
-    IMPORTANT:
-    Re-run the original Webflow swiper
-    AFTER API data exists
-    */
-
-
-    initSlider();
+data.forEach(item => {
 
 
 
-})
+bgWrapper.insertAdjacentHTML(
+"beforeend",
 
-.catch(error => {
+`
+<div class="swiper-slide is-slider-bg">
 
-    console.error("API ERROR:", error);
+<img src="${item.image}" class="slider-bg_img">
+
+</div>
+`
+
+);
+
+
+
+
+titleWrapper.insertAdjacentHTML(
+"beforeend",
+
+`
+<div class="swiper-slide is-slider-titles">
+
+<div class="year">
+${item.year}
+</div>
+
+<div class="content">
+${item.content || ""}
+</div>
+
+<p class="slider-titles_heading">
+${item.title}
+</p>
+
+
+</div>
+`
+
+);
+
+
+
+
+
+// thumbnails use same image
+
+thumbWrapper.insertAdjacentHTML(
+"beforeend",
+
+`
+<div class="swiper-slide is-slider-thumbs">
+
+<div class="slider-thumbs_height">
+
+<img src="${item.image}" class="slider-thumbs_img">
+
+</div>
+
+</div>
+`
+
+);
+
+
 
 });
 
@@ -114,146 +114,154 @@ fetch(API)
 
 
 
-function numberWithZero(num) {
+initSlider(data.length);
 
-    return num < 10 ? "0" + num : num;
+
+
+});
+
+
+
+
+
+
+function initSlider(total){
+
+
+
+$(".swiper-number-total")
+.text(numberWithZero(total));
+
+
+
+
+const component = $(".slider-gallery_component");
+
+
+
+const bgSwiper = new Swiper(
+component.find(".swiper.is-slider-bg")[0],
+{
+
+slidesPerView:1,
+
+speed:400,
+
+effect:"fade",
+
+allowTouchMove:false
+
+}
+
+);
+
+
+
+
+
+const thumbsSwiper = new Swiper(
+component.find(".swiper.is-slider-thumbs")[0],
+{
+
+slidesPerView:1,
+
+speed:600,
+
+loop:true,
+
+loopedSlides:total,
+
+slideToClickedSlide:true
+
+}
+
+);
+
+
+
+
+
+
+const textSwiper = new Swiper(
+component.find(".swiper.is-slider-titles")[0],
+{
+
+slidesPerView:"auto",
+
+speed:600,
+
+loop:true,
+
+loopedSlides:total,
+
+slideToClickedSlide:true,
+
+
+mousewheel:true,
+
+keyboard:true,
+
+
+centeredSlides:true,
+
+
+slideActiveClass:"is-active",
+
+slideDuplicateActiveClass:"is-active",
+
+
+
+navigation:{
+
+
+nextEl:".swiper-next",
+
+prevEl:".swiper-prev"
+
+
+},
+
+
+thumbs:{
+
+swiper:bgSwiper
 
 }
 
 
+}
 
+);
 
 
-function initSlider(){
 
 
-$(".slider-gallery_component").each(function () {
 
 
-    let totalSlides = $(this)
-    .find(".swiper-slide.is-slider-thumbs")
-    .length;
+// CONNECT
 
+textSwiper.controller.control = thumbsSwiper;
 
-    $(".swiper-number-total")
-    .text(numberWithZero(totalSlides));
+thumbsSwiper.controller.control = textSwiper;
 
 
 
-    const bgSwiper = new Swiper(
-        $(this).find(".swiper.is-slider-bg")[0],
-        {
 
-        slidesPerView:1,
+// COUNTER
 
-        speed:400,
+textSwiper.on(
+"slideChange",
+function(e){
 
-        effect:"fade",
 
-        allowTouchMove:false
-
-        }
-    );
-
-
-
-
-    const thumbsSwiper = new Swiper(
-        $(this).find(".swiper.is-slider-thumbs")[0],
-        {
-
-        slidesPerView:1,
-
-        speed:600,
-
-        loop:true,
-
-        loopedSlides:totalSlides,
-
-        slideToClickedSlide:true
-
-        }
-    );
-
-
-
-
-
-    const textSwiper = new Swiper(
-        $(this).find(".swiper.is-slider-titles")[0],
-        {
-
-        slidesPerView:"auto",
-
-        speed:600,
-
-        loop:true,
-
-        loopedSlides:totalSlides,
-
-        slideToClickedSlide:true,
-
-
-        mousewheel:true,
-
-        keyboard:true,
-
-
-        centeredSlides:true,
-
-
-        slideActiveClass:"is-active",
-
-        slideDuplicateActiveClass:"is-active",
-
-
-
-        thumbs:{
-            swiper:bgSwiper
-        },
-
-
-        navigation:{
-
-            nextEl:$(this).find(".swiper-next")[0],
-
-            prevEl:$(this).find(".swiper-prev")[0]
-
-        }
-
-
-        }
-    );
-
-
-
-
-    // CONNECT SLIDERS
-
-    textSwiper.controller.control = thumbsSwiper;
-
-    thumbsSwiper.controller.control = textSwiper;
-
-
-
-
-    // COUNTER
-
-    textSwiper.on(
-        "slideChange",
-        function(e){
-
-            $(".swiper-number-current")
-            .text(
-                numberWithZero(e.realIndex + 1)
-            );
-
-        }
-    );
-
+$(".swiper-number-current")
+.text(
+numberWithZero(e.realIndex + 1)
+);
 
 
 });
+
 
 
 }
