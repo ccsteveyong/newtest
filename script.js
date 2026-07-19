@@ -41,7 +41,7 @@ thumbWrapper.innerHTML = "";
 
 data.forEach(item => {
 
-
+console.log("Current Item:", item);
 
 // =====================
 // BACKGROUND IMAGE
@@ -77,13 +77,11 @@ let contentHTML = "";
 
 Object.keys(item)
 
-.filter(key => key.startsWith("content"))
+.filter(key => key.toLowerCase().replace(/\s/g,"").startsWith("content"))
 
 .forEach(key => {
 
-
-    if(item[key] && item[key].trim() !== ""){
-
+    if(item[key]){
 
         contentHTML += `
 
@@ -93,9 +91,7 @@ Object.keys(item)
 
         `;
 
-
     }
-
 
 });
 
