@@ -8,7 +8,7 @@ function numberWithZero(num) {
 document.addEventListener("DOMContentLoaded", () => {
 
 
-fetch("data.json")
+fetch(API)
 .then(response => response.json())
 .then(data => {
 
