@@ -1,0 +1,30 @@
+body{
+
+    background:#111;
+    color:white;
+
+    font-family:Arial;
+
+}
+
+.timeline-item{
+
+    margin:60px;
+
+    padding:40px;
+
+    border:1px solid #333;
+
+}
+
+.year{
+
+    font-size:80px;
+
+}
+
+.title{
+
+    font-size:42px;
+
+}
