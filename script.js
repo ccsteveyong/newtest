@@ -69,14 +69,8 @@ titleWrapper.insertAdjacentHTML(
 ${item.year}
 </div>
 
-<div class="content">
-${
-Array.isArray(item.content)
-?
-item.content.map(text => `<div>${text}</div>`).join("")
-:
-item.content || ""
-}
+<div id="content">
+${item.content || ""}
 </div>
 
 <p class="slider-titles_heading">
