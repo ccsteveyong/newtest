@@ -1,4 +1,4 @@
-const API = "YOUR_API_URL";
+const API = "https://script.google.com/macros/s/AKfycbyS2-C9UbYSoFpTJmDoBpjnKwdqRynm3mx-cDcKxKSKR8Y6MaODCtMNjtzAmlyTvLY1/exec";
 
 
 function numberWithZero(num){
