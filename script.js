@@ -15,6 +15,8 @@ fetch(API)
         div.className = "timeline-item";
 
         div.innerHTML = `
+        
+            <img class="timeline-image" src="${item.image}" alt="${item.title}">
 
             <div class="year">${item.year}</div>
 
