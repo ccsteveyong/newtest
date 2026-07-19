@@ -26,7 +26,7 @@ const thumbWrapper = document.querySelector(".swiper-wrapper.is-slider-thumbs");
 
 
 
-// remove Webflow dummy slides
+// Remove Webflow placeholder slides
 
 bgWrapper.innerHTML = "";
 
@@ -43,13 +43,19 @@ data.forEach(item => {
 
 
 
+// =====================
+// BACKGROUND IMAGE
+// =====================
+
 bgWrapper.insertAdjacentHTML(
 "beforeend",
 
 `
 <div class="swiper-slide is-slider-bg">
 
-<img src="${item.image}" class="slider-bg_img">
+<img 
+src="${item.image}" 
+class="slider-bg_img">
 
 </div>
 `
@@ -57,6 +63,50 @@ bgWrapper.insertAdjacentHTML(
 );
 
 
+
+
+
+// =====================
+// DYNAMIC CONTENT
+// Detect content1, content2, content3...
+// =====================
+
+
+let contentHTML = "";
+
+
+Object.keys(item)
+
+.filter(key => key.startsWith("content"))
+
+.forEach(key => {
+
+
+    if(item[key] && item[key].trim() !== ""){
+
+
+        contentHTML += `
+
+        <div class="content-item">
+            ${item[key]}
+        </div>
+
+        `;
+
+
+    }
+
+
+});
+
+
+
+
+
+
+// =====================
+// TITLE SLIDE
+// =====================
 
 
 titleWrapper.insertAdjacentHTML(
@@ -65,17 +115,30 @@ titleWrapper.insertAdjacentHTML(
 `
 <div class="swiper-slide is-slider-titles">
 
+
 <div class="year">
-${item.year}
+
+${item.year || ""}
+
 </div>
+
+
 
 <div id="content">
-${item.content || ""}
+
+${contentHTML}
+
 </div>
 
+
+
+
 <p class="slider-titles_heading">
-${item.title}
+
+${item.title || ""}
+
 </p>
+
 
 
 </div>
@@ -87,7 +150,11 @@ ${item.title}
 
 
 
-// thumbnails use same image
+
+// =====================
+// THUMBNAIL
+// =====================
+
 
 thumbWrapper.insertAdjacentHTML(
 "beforeend",
@@ -95,11 +162,17 @@ thumbWrapper.insertAdjacentHTML(
 `
 <div class="swiper-slide is-slider-thumbs">
 
+
 <div class="slider-thumbs_height">
 
-<img src="${item.image}" class="slider-thumbs_img">
+
+<img 
+src="${item.image}" 
+class="slider-thumbs_img">
+
 
 </div>
+
 
 </div>
 `
@@ -109,6 +182,7 @@ thumbWrapper.insertAdjacentHTML(
 
 
 });
+
 
 
 
@@ -118,7 +192,18 @@ initSlider(data.length);
 
 
 
+
+
+})
+
+.catch(error => {
+
+console.error("API ERROR:", error);
+
 });
+
+
+
 
 
 
@@ -129,8 +214,11 @@ function initSlider(total){
 
 
 
+// UPDATE TOTAL NUMBER
+
 $(".swiper-number-total")
 .text(numberWithZero(total));
+
 
 
 
@@ -139,8 +227,18 @@ const component = $(".slider-gallery_component");
 
 
 
+
+
+
+// =====================
+// BACKGROUND SWIPER
+// =====================
+
+
 const bgSwiper = new Swiper(
+
 component.find(".swiper.is-slider-bg")[0],
+
 {
 
 slidesPerView:1,
@@ -151,6 +249,7 @@ effect:"fade",
 
 allowTouchMove:false
 
+
 }
 
 );
@@ -159,8 +258,17 @@ allowTouchMove:false
 
 
 
+
+
+// =====================
+// THUMB SWIPER
+// =====================
+
+
 const thumbsSwiper = new Swiper(
+
 component.find(".swiper.is-slider-thumbs")[0],
+
 {
 
 slidesPerView:1,
@@ -173,6 +281,7 @@ loopedSlides:total,
 
 slideToClickedSlide:true
 
+
 }
 
 );
@@ -182,17 +291,28 @@ slideToClickedSlide:true
 
 
 
+
+// =====================
+// TITLE SWIPER
+// =====================
+
+
 const textSwiper = new Swiper(
+
 component.find(".swiper.is-slider-titles")[0],
+
 {
+
 
 slidesPerView:"auto",
 
 speed:600,
 
+
 loop:true,
 
 loopedSlides:total,
+
 
 slideToClickedSlide:true,
 
@@ -205,28 +325,37 @@ keyboard:true,
 centeredSlides:true,
 
 
+
 slideActiveClass:"is-active",
 
 slideDuplicateActiveClass:"is-active",
 
 
 
+
+
 navigation:{
 
 
-nextEl:".swiper-next",
+nextEl: component.find(".swiper-next")[0],
 
-prevEl:".swiper-prev"
+prevEl: component.find(".swiper-prev")[0]
 
 
 },
 
 
+
+
+
 thumbs:{
+
 
 swiper:bgSwiper
 
+
 }
+
 
 
 }
@@ -238,7 +367,12 @@ swiper:bgSwiper
 
 
 
-// CONNECT
+
+
+// =====================
+// CONNECT SLIDERS
+// =====================
+
 
 textSwiper.controller.control = thumbsSwiper;
 
@@ -247,20 +381,35 @@ thumbsSwiper.controller.control = textSwiper;
 
 
 
-// COUNTER
+
+
+
+
+
+// =====================
+// UPDATE COUNTER
+// =====================
+
 
 textSwiper.on(
+
 "slideChange",
+
 function(e){
 
 
 $(".swiper-number-current")
+
 .text(
+
 numberWithZero(e.realIndex + 1)
+
 );
 
 
-});
+}
+
+);
 
 
 
