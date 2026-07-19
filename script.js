@@ -70,7 +70,13 @@ ${item.year}
 </div>
 
 <div class="content">
-${item.content || ""}
+${
+Array.isArray(item.content)
+?
+item.content.map(text => `<div>${text}</div>`).join("")
+:
+item.content || ""
+}
 </div>
 
 <p class="slider-titles_heading">
